@@ -1,0 +1,36 @@
+{
+    "production": false,
+    "authentication": false,
+    "auth": {
+        "host": "http://127.0.0.1:9000",
+        "token": "xxx",
+        "email": "xxx@xxx.co.za",
+        "appId": "xxx"
+    },
+    "localwebserver": {
+        "port": 10000
+    },
+    "mongodb": {
+        "url": "xxx",
+        "database": "xxx"
+    },
+    "logger": {
+        "appenders": {
+            "status": {
+                "type": "file",
+                "backups": 10,
+                "filename": "./logs/status.log",
+                "absolute": true,
+                "maxLogSize": 102400
+            }
+        },
+        "categories": {
+            "default": {
+                "appenders": [
+                    "status"
+                ],
+                "level": "error"
+            }
+        }
+    }
+}
