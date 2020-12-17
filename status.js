@@ -55,8 +55,8 @@ try {
                 });
 
                 var components = require('./api/components');
-                app.use('/reporting/components', components);
-                __logger.info('Loaded: ./api/reporting/components');
+                app.use('/status/components', components);
+                __logger.info('Loaded: /status/components');
 
                 app.use((error, req, res, next) => {
                     var err = new ErrorResponse();

@@ -8,7 +8,7 @@
         "appId": "xxx"
     },
     "localwebserver": {
-        "port": 10000
+        "port": 19000
     },
     "mongodb": {
         "url": "xxx",

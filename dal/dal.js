@@ -86,24 +86,18 @@ var module = function () {
 
 		list: (args) => {
 			var deferred = Q.defer();
-			
-			var match = {
+
+			var params = {
 				'bitid.auth.users.email': args.req.body.header.email
 			};
 
-			if (typeof (args.req.body.componentId) != 'undefined') {
+			if (typeof (args.req.body.componentId) != 'undefined' && args.req.body.componentId !== null) {
 				if (Array.isArray(args.req.body.componentId) && args.req.body.componentId.length > 0) {
-					match._id = {
+					params._id = {
 						$in: args.req.body.componentId.map(id => ObjectId(id))
 					};
-				} else if (typeof (args.req.body.componentId) == 'string' && args.req.body.componentId.length == 24) {
-					match._id = ObjectId(args.req.body.componentId);
-				};
-			};
-
-			if (typeof (args.req.body.description) != 'undefined') {
-				match.description = {
-					$regex: args.req.body.description
+				} else {
+					params._id = ObjectId(args.req.body.componentId);
 				};
 			};
 
@@ -123,78 +117,10 @@ var module = function () {
 				});
 			};
 
-			var params = [
-				{
-					$match: match
-				},
-				{
-					$project: {
-						'views': {
-							'mobile': {
-								'$size': "$layout.mobile"
-							},
-							'tablet': {
-								'$size': "$layout.tablet"
-							},
-							'desktop': {
-								'$size': "$layout.desktop"
-							}
-						},
-						'_id': 1,
-						'bitid': 1,
-						'layout': 1,
-						'settings': 1,
-						'serverDate': 1,
-						'description': 1
-					}
-				},
-				{
-					$project: {
-						'views': {
-							'mobile': {
-								$cond: {
-									if: {
-										$gt: [ "$views.mobile", 0]
-									},
-									then: true,
-									else: false
-								}
-							},
-							'tablet': {
-								$cond: {
-									if: {
-										$gt: [ "$views.tablet", 0]
-									},
-									then: true,
-									else: false
-								}
-							},
-							'desktop': {
-								$cond: {
-									if: {
-										$gt: [ "$views.desktop", 0]
-									},
-									then: true,
-									else: false
-								}
-							}
-						},
-						'_id': 1,
-						'bitid': 1,
-						'layout': 1,
-						'settings': 1,
-						'serverDate': 1,
-						'description': 1
-					}
-				},
-				{
-					$project: filter
-				}
-			];
-
 			db.call({
 				'params': params,
-				'operation': 'aggregate',
+				'filter': filter,
+				'operation': 'find',
 				'collection': 'tblComponents'
 			})
 				.then(result => {
@@ -269,12 +195,7 @@ var module = function () {
 					'serverDate': new Date()
 				}
 			};
-			if (typeof (args.req.body.layout) != 'undefined' && args.req.body.layout != null && args.req.body.layout != '') {
-				update.$set.layout = args.req.body.layout;
-			};
-			if (typeof (args.req.body.settings) != 'undefined' && args.req.body.settings != null && args.req.body.settings != '') {
-				update.$set.settings = args.req.body.settings;
-			};
+
 			if (typeof (args.req.body.description) != 'undefined') {
 				update.$set.description = args.req.body.description;
 			};
@@ -294,13 +215,12 @@ var module = function () {
 				'_id': ObjectId(args.req.body.componentId)
 			};
 
-			dalComponents.audit({
+			db.call({
 				'params': params,
 				'update': update,
 				'operation': 'update',
 				'collection': 'tblComponents'
 			})
-				.then(db.call, null)
 				.then(result => {
 					args.result = result;
 					deferred.resolve(args);
@@ -321,21 +241,18 @@ var module = function () {
 			var params = {
 				'bitid.auth.users': {
 					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
+						'role': 5,
 						'email': args.req.body.header.email
 					}
 				},
 				'_id': ObjectId(args.req.body.componentId)
 			};
 
-			dalComponents.audit({
+			db.call({
 				'params': params,
 				'operation': 'remove',
 				'collection': 'tblComponents'
 			})
-				.then(db.call, null)
 				.then(result => {
 					args.result = result;
 					deferred.resolve(args);

@@ -2,5 +2,5 @@
 	"token": {},
 	"email": "xxx@xxx.co.za",
 	"appId": "xxx",
-	"reporting": "http://127.0.0.1:10000"
+	"status": "http://127.0.0.1:19000"
 }

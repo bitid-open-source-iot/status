@@ -9,7 +9,7 @@ chai.use(subset);
 
 var componentId = null;
 
-describe('components', function () {
+describe('Components', function () {
     it('/status/components/add', function (done) {
         this.timeout(5000);
 
