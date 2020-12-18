@@ -1,6 +1,7 @@
 export const environment = {
     'auth': 'https://auth.bitid.co.za',
     'appId': '000000000000000000000001',
+    'socket': 'ws://127.0.0.1:19000',
     'status': 'http://127.0.0.1:19000',
     'production': false,
     'description': 'Status Page',

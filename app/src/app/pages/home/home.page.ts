@@ -1,7 +1,8 @@
 import { PagesService } from 'src/app/services/pages/pages.service';
-import { OnInit, Component, OnDestroy } from '@angular/core';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { SocketService } from 'src/app/services/socket/socket.service';
 import { ComponentsService } from 'src/app/services/components/components.service';
+import { OnInit, Component, OnDestroy } from '@angular/core';
 
 @Component({
     selector: 'home-page',
@@ -11,10 +12,11 @@ import { ComponentsService } from 'src/app/services/components/components.servic
 
 export class HomePage implements OnInit, OnDestroy {
 
-    constructor(public pages: PagesService, private toast: ToastService, public components: ComponentsService) { };
+    constructor(public pages: PagesService, private toast: ToastService, private socket: SocketService, public components: ComponentsService) { };
 
     public page: any;
     public loading: boolean;
+    private subscriptions: any = {};
 
     private async load() {
         this.loading = true;
@@ -63,9 +65,15 @@ export class HomePage implements OnInit, OnDestroy {
     };
 
     ngOnInit(): void {
+        this.subscriptions.socket = this.socket.message.subscribe(message => {
+            console.log(message);
+        });
+
         this.load();
     };
 
-    ngOnDestroy(): void { };
+    ngOnDestroy(): void {
+        this.subscriptions.socket.unsubscribe();
+    };
 
 }

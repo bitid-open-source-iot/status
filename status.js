@@ -1,4 +1,5 @@
 const Q = require('q');
+const ws = require('ws');
 const db = require('./db/mongo');
 const bll = require('./bll/bll');
 const cors = require('cors');
@@ -9,12 +10,13 @@ const parser = require('body-parser');
 const express = require('express');
 const responder = require('./lib/responder');
 const ErrorResponse = require('./lib/error-response');
-const { setTimeout } = require('timers');
 
 global.__base = __dirname + '/';
+global.__server;
 global.__logger = require('./lib/logger');
 global.__settings = require('./config.json');
 global.__responder = new responder.module();
+global.__websocket;
 global.__monitoring = [];
 
 try {
@@ -75,8 +77,16 @@ try {
                     __responder.error(req, res, err);
                 });
 
-                var server = http.createServer(app);
-                server.listen(args.settings.localwebserver.port);
+                __server = http.createServer(app);
+                __server.listen(args.settings.localwebserver.port);
+               
+                __websocket = new ws.Server({
+                    'server': __server
+                });
+                __websocket.on('connection', (socket, request) => {
+                    socket.pageId = '000000000000000000000001';
+                    __logger.info('Socket Client Connected!')
+                });
 
                 deferred.resolve(args);
             } catch (e) {

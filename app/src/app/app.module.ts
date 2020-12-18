@@ -17,6 +17,7 @@ import { ApiService } from './services/api/api.service';
 import { AuthService } from './services/auth/auth.service';
 import { PagesService } from './services/pages/pages.service';
 import { ToastService } from './services/toast/toast.service';
+import { SocketService } from './services/socket/socket.service';
 import { HistoryService } from './services/history/history.service';
 import { AccountService } from './services/account/account.service';
 import { FormErrorService } from './services/form-error/form-error.service';
@@ -50,6 +51,7 @@ import { environment } from '../environments/environment';
         AuthService,
         ToastService,
         PagesService,
+        SocketService,
         AccountService,
         HistoryService,
         FormErrorService,

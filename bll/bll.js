@@ -197,6 +197,18 @@ var module = function () {
 			this.call(monitor)
 			.then(dal.monitor.write, null)
 			.then(res => {
+				if (typeof(__websocket.clients) != 'undefined') {
+					__websocket.clients.forEach(client => {
+						if (client.pageId == monitor.pageId) {
+							client.send(JSON.stringify({
+								'date': monitor.date,
+								'pageId': monitor.pageId,
+								'status': monitor.status,
+								'componentId': monitor.componentId
+							}));
+						};
+					});
+				};
 				__logger.info('Status Monitor Processing Complete: ' + monitor.request.url);
 			}, err => {
 				__logger.error('Error Processing Status Monitor');
