@@ -1,0 +1,86 @@
+<div class="container">
+    <div class="components" *ngIf="components.data.length > 0">
+        <div class="component" *ngFor="let component of components.data">
+            <div class="header">
+                <h1>
+                    {{ component.description }}
+                </h1>
+
+                <p>
+                    Operational
+                </p>
+            </div>
+
+            <div class="uptime">
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+                <div class="item"></div>
+            </div>
+
+            <div class="footer">
+                <p>
+                    30 days ago
+                </p>
+
+                <div class="spacer"></div>
+
+                <p>
+                    uptime
+                </p>
+
+                <div class="spacer"></div>
+
+                <p>
+                    Today
+                </p>
+            </div>
+
+            <amchart [id]="component.componentId" [data]="component.duration"></amchart>
+
+            <div class="footer">
+                <p>
+                    30 days ago
+                </p>
+
+                <div class="spacer"></div>
+
+                <p>
+                    response time
+                </p>
+
+                <div class="spacer"></div>
+
+                <p>
+                    Today
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

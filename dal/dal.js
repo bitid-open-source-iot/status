@@ -457,6 +457,72 @@ var module = function () {
 		}
 	};
 
+	var dalMonitor = {
+		load: () => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$match: {
+						'monitor': true
+					}
+				},
+				{
+					$project: {
+						'pageId': 1,
+						'request': 1,
+						'componentId': '$_id'
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblComponents'
+			})
+				.then(result => {
+					deferred.resolve(JSON.parse(JSON.stringify(result)));
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		write: (monitor) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'date': monitor.date,
+				'status': monitor.status,
+				'pageId': ObjectId(monitor.pageId),
+				'componentId': ObjectId(monitor.componentId)
+			};
+
+			db.call({
+				'params': params,
+				'operation': 'insert',
+				'collection': 'tblHistorical'
+			})
+				.then(result => {
+					deferred.resolve(result);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		}
+	};
+
 	var dalComponents = {
 		add: (args) => {
 			var deferred = Q.defer();
@@ -591,6 +657,14 @@ var module = function () {
 		load: (args) => {
 			var deferred = Q.defer();
 
+			var sort = {
+				'description': 1
+			};
+
+			if (typeof(args.req.body.sort) != 'undefined' && args.req.body.sort !== null) {
+				sort = args.req.body.sort;
+			};
+
 			var params = [
 				{
 					$match: {
@@ -598,17 +672,54 @@ var module = function () {
 					}
 				},
 				{
-					$project: {
-						'pageId': 1,
-						'componentId': '$_id'
+					$group: {
+						'_id': {
+							'pageId': '$pageId',
+							'componentId': '$componentId'
+						},
+						'status': {
+							$push: {
+								'date': '$date',
+								'duration': '$status.duration',
+								'responded': '$status.responded'
+							}
+						},
+						'pageId': {
+							$first: '$pageId'
+						},
+						'componentId': {
+							$first: '$componentId'
+						}
 					}
+				},
+				{
+					$lookup: {
+						'as': 'component',
+						'from': 'tblComponents',
+						'localField': 'componentId',
+						'foreignField': '_id'
+					}
+				},
+				{
+					$unwind: "$component"
+				},
+				{
+					$project: {
+						'status': 1,
+						'pageId': 1,
+						'description': '$component.description',
+						'componentId': 1
+					}
+				},
+				{
+					$sort: sort
 				}
 			];
 
 			db.call({
 				'params': params,
 				'operation': 'aggregate',
-				'collection': 'tblComponents'
+				'collection': 'tblHistorical'
 			})
 				.then(result => {
 					args.result = result;
@@ -832,6 +943,7 @@ var module = function () {
 
 	return {
 		'pages': dalPages,
+		'monitor': dalMonitor,
 		'components': dalComponents
 	};
 };

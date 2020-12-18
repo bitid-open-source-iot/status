@@ -1,5 +1,5 @@
 .uptime {
-    height: 50px;
+    height: 60px;
     display: flex;
     padding: 1px;
     flex-direction: row;
@@ -7,10 +7,13 @@
     .item {
         flex: 1 auto;
         margin: 1px;
-        background-color: #E0E0E0;
+        border-radius: 2px;
+        // background-color: #E0E0E0;
+        background-color: #4CAF50;
     }
     .item:hover {
-        background-color: #424242;
+        // background-color: #424242;
+        background-color: #388E3C;
     }
 }
 .components {
@@ -39,6 +42,9 @@
                 font-size: 10px;
                 line-height: 10px;
             }
+        }
+        amchart {
+            height: 100px;
         }
         .footer {
             color: #9E9E9E;

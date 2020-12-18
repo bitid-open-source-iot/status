@@ -1,3 +1,5 @@
+const Q = require('q');
+const fetch = require('node-fetch');
 const tools = require('../lib/tools');
 const dalModule = require('../dal/dal');
 
@@ -111,7 +113,7 @@ var module = function () {
 				});
 		},
 
-		unsubscribe: (req, 
+		unsubscribe: (req,
 			res) => {
 			var args = {
 				'req': req,
@@ -142,7 +144,66 @@ var module = function () {
 				});
 		}
 	};
-	
+
+	var bllMonitor = {
+		load: () => {
+			var deferred = Q.defer();
+
+			var dal = new dalModule.module();
+			dal.monitor.load().then(deferred.resolve, deferred.reject);
+
+			return deferred.promise;
+		},
+
+		async call(monitor) {
+			var deferred = Q.defer();
+
+			try {
+				const start = new Date();
+
+				const response = await fetch(monitor.request.url, {
+					'body': JSON.stringify(monitor.request.body),
+					'method': monitor.request.method,
+					'timeout': 10000,
+					'headers': monitor.request.headers
+				});
+
+				const finish = new Date();
+		
+				if (response.ok) {
+					monitor.status = {
+						'duration': finish - start,
+						'responded': true
+					};
+					deferred.resolve(monitor);
+				} else {
+					monitor.status = {
+						'duration': 0,
+						'responded': false
+					};
+					deferred.resolve(monitor);
+				};
+			} catch (error) {
+				deferred.reject(error);
+			};
+
+			return deferred.promise;
+		},
+
+		process(monitor) {
+			var dal = new dalModule.module();
+			monitor.date = new Date();
+
+			this.call(monitor)
+			.then(dal.monitor.write, null)
+			.then(res => {
+				__logger.info('Status Monitor Processing Complete: ' + monitor.request.url);
+			}, err => {
+				__logger.error('Error Processing Status Monitor');
+			});
+		}
+	};
+
 	var bllComponents = {
 		add: (req, res) => {
 			var args = {
@@ -237,6 +298,7 @@ var module = function () {
 
 	return {
 		'pages': bllPages,
+		'monitor': bllMonitor,
 		'components': bllComponents
 	};
 };

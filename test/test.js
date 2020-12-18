@@ -241,7 +241,9 @@ describe('Components', function () {
         tools.api.components.load()
             .then((result) => {
                 try {
+                    result[0].should.have.property('status');
                     result[0].should.have.property('pageId');
+                    result[0].should.have.property('description');
                     result[0].should.have.property('componentId');
                     done();
                 } catch (e) {
@@ -505,7 +507,9 @@ var tools = {
 
                 tools.put('/status/components/load', {
                     'filter': [
+                        'status',
                         'pageId',
+                        'description',
                         'componentId'
                     ],
                     'pageId': pageId

@@ -30,6 +30,12 @@ if (pages.count() == 0) {
 var components = db.getCollection('tblComponents');
 if (components.count() == 0) {
     db.tblComponents.insert({
+        'request': {
+            'url': 'https://status.domain.com/hit-test',
+            'body': {},
+            'method': 'PUT',
+            'headers': {}
+        },
         '_id': ObjectId('000000000000000000000001'),
         'pageId': ObjectId('000000000000000000000001'),
         'serverDate': ISODate(),

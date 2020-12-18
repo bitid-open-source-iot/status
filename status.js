@@ -1,5 +1,6 @@
 const Q = require('q');
 const db = require('./db/mongo');
+const bll = require('./bll/bll');
 const cors = require('cors');
 const http = require('http');
 const auth = require('./lib/auth');
@@ -8,11 +9,13 @@ const parser = require('body-parser');
 const express = require('express');
 const responder = require('./lib/responder');
 const ErrorResponse = require('./lib/error-response');
+const { setTimeout } = require('timers');
 
 global.__base = __dirname + '/';
 global.__logger = require('./lib/logger');
 global.__settings = require('./config.json');
 global.__responder = new responder.module();
+global.__monitoring = [];
 
 try {
     var portal = {
@@ -113,6 +116,7 @@ try {
             portal.logger(args)
                 .then(portal.api, null)
                 .then(portal.database, null)
+                .then(portal.startwatching, null)
                 .then(args => {
                     console.log('Webserver Running on port: ', args.settings.localwebserver.port);
                 }, err => {
@@ -139,6 +143,30 @@ try {
                 __logger.log('Database Connection Error: ' + err);
                 deferred.reject(err);
             });
+
+            return deferred.promise;
+        },
+
+        startwatching: (args) => {
+            var deferred = Q.defer();
+            
+            try {
+                var bllModule = new bll.module();
+                bllModule.monitor.load()
+                .then(monitoring => {
+                    __monitoring = monitoring;
+                    __monitoring.map(monitor => bllModule.monitor.process(monitor));
+                    setInterval(() => {
+                        __monitoring.map(monitor => bllModule.monitor.process(monitor));
+                    }, 1 * 60 * 1000);
+                }, err => {
+                    __logger.error(err.message);
+                });
+
+                deferred.resolve(args);
+            } catch (error) {
+                deferred.reject(error.message);
+            };
 
             return deferred.promise;
         }

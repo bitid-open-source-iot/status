@@ -25,32 +25,32 @@ mat-toolbar {
     flex: 1 auto;
 }
 .container {
-    width: 50%;
+    width: calc(50% - 20px);
     margin: auto;
     padding: 10px;
 }
 @media screen and (max-width: 1500px) {
     .container {
-        width: 60%;
+        width: calc(60% - 20px);
     }
 }
 @media screen and (max-width: 1200px) {
     .container {
-        width: 70%;
+        width: calc(70% - 20px);
     }
 }
 @media screen and (max-width: 900px) {
     .container {
-        width: 80%;
+        width: calc(80% - 20px);
     }
 }
 @media screen and (max-width: 600px) {
     .container {
-        width: 90%;
+        width: calc(90% - 20px);
     }
 }
 @media screen and (max-width: 400px) {
     .container {
-        width: 100%;
+        width: calc(100% - 20px);
     }
 }

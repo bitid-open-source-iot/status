@@ -8,7 +8,7 @@ import { AuthService } from './services/auth/auth.service';
 const routes: Routes = [
     {
         'path': '',
-        'loadChildren': () => import('./pages/status/status.module').then(m => m.StatusModule)
+        'loadChildren': () => import('./pages/home/home.module').then(m => m.HomeModule)
     },
     {
         'path': 'components',

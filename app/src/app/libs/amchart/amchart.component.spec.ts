@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StatusPage } from './status.page';
+import { AmchartComponent } from './amchart.component';
 
-describe('StatusPage', () => {
-  let component: StatusPage;
-  let fixture: ComponentFixture<StatusPage>;
+describe('AmchartComponent', () => {
+  let component: AmchartComponent;
+  let fixture: ComponentFixture<AmchartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ StatusPage ]
+      declarations: [ AmchartComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StatusPage);
+    fixture = TestBed.createComponent(AmchartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

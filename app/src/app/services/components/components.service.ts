@@ -20,6 +20,10 @@ export class ComponentsService {
         return await this.api.post(environment.status, '/status/components/get', params);
     };
 
+    public async load(params: any) {
+        return await this.api.put(environment.status, '/status/components/load', params);
+    };
+
     public async list(params: any) {
         return await this.api.post(environment.status, '/status/components/list', params);
     };
