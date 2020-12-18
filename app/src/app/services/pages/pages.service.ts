@@ -20,12 +20,12 @@ export class PagesService {
         return await this.api.post(environment.status, '/status/pages/get', params);
     };
 
-    public async list(params: any) {
-        return await this.api.post(environment.status, '/status/pages/list', params);
+    public async load(params: any) {
+        return await this.api.put(environment.status, '/status/pages/load', params);
     };
 
-    public async load(params: any) {
-        return await this.api.post(environment.status, '/status/pages/data', params);
+    public async list(params: any) {
+        return await this.api.post(environment.status, '/status/pages/list', params);
     };
 
     public async share(params: any) {

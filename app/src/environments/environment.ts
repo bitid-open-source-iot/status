@@ -1,7 +1,7 @@
 export const environment = {
     'auth': 'https://auth.bitid.co.za',
     'appId': '000000000000000000000001',
-    'status': 'https://status.bitid.co.za',
+    'status': 'http://127.0.0.1:19000',
     'production': false,
     'description': 'Status Page',
     'scopes': [

@@ -15,6 +15,11 @@ router.post('/get', (req, res) => {
 	myModule.components.get(req, res);
 });
 
+router.put('/load', (req, res) => {
+	var myModule = new bll.module();
+	myModule.components.load(req, res);
+});
+
 router.post('/list', (req, res) => {
 	var myModule = new bll.module();
 	myModule.components.list(req, res);

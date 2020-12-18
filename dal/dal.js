@@ -83,6 +83,45 @@ var module = function () {
 			return deferred.promise;
 		},
 
+		load: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'domain': args.req.headers.referer
+			};
+
+			var filter = {};
+			if (Array.isArray(args.req.body.filter) && args.req.body.filter.length > 0) {
+				filter._id = 0;
+				args.req.body.filter.map(f => {
+					if (f == 'pageId') {
+						filter['_id'] = 1;
+					} else {
+						filter[f] = 1;
+					};
+				});
+			};
+
+			db.call({
+				'params': params,
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblPages'
+			})
+				.then(result => {
+					args.result = result[0];
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
 		list: (args) => {
 			var deferred = Q.defer();
 
@@ -537,6 +576,42 @@ var module = function () {
 				.then(db.call, null)
 				.then(result => {
 					args.result = result[0];
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		load: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$match: {
+						'pageId': ObjectId(args.req.body.pageId)
+					}
+				},
+				{
+					$project: {
+						'pageId': 1,
+						'componentId': '$_id'
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblComponents'
+			})
+				.then(result => {
+					args.result = result;
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();

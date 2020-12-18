@@ -58,6 +58,27 @@ describe('Pages', function () {
             });
     });
 
+    it('/status/pages/load', function (done) {
+        this.timeout(5000);
+
+        tools.api.pages.load()
+            .then((result) => {
+                try {
+                    result.should.have.property('pageId');
+                    result.should.have.property('description');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
     it('/status/pages/list', function (done) {
         this.timeout(5000);
 
@@ -214,6 +235,27 @@ describe('Components', function () {
             });
     });
 
+    it('/status/components/load', function (done) {
+        this.timeout(5000);
+
+        tools.api.components.load()
+            .then((result) => {
+                try {
+                    result[0].should.have.property('pageId');
+                    result[0].should.have.property('componentId');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
     it('/status/components/list', function (done) {
         this.timeout(5000);
 
@@ -310,6 +352,9 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/status/pages/add', {
+                    'domain': [
+                        '127.0.0.1'
+                    ],
                     'description': 'Mocha Test Report',
                     'organizationOnly': 1
                 })
@@ -331,6 +376,19 @@ var tools = {
                         'organizationOnly'
                     ],
                     'pageId': pageId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            load: () => {
+                var deferred = Q.defer();
+
+                tools.put('/status/pages/load', {
+                    'filter': [
+                        'pageId',
+                        'description'
+                    ]
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -437,6 +495,20 @@ var tools = {
                     ],
                     'pageId': pageId,
                     'componentId': componentId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            load: () => {
+                var deferred = Q.defer();
+
+                tools.put('/status/components/load', {
+                    'filter': [
+                        'pageId',
+                        'componentId'
+                    ],
+                    'pageId': pageId
                 })
                     .then(deferred.resolve, deferred.resolve);
 

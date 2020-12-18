@@ -35,6 +35,21 @@ var module = function () {
 				});
 		},
 
+		load: (req, res) => {
+			var args = {
+				'req': req,
+				'res': res
+			};
+
+			var dal = new dalModule.module();
+			dal.pages.load(args)
+				.then(args => {
+					__responder.success(req, res, args.result);
+				}, err => {
+					__responder.error(req, res, err);
+				});
+		},
+
 		list: (req, res) => {
 			var args = {
 				'req': req,
@@ -152,6 +167,21 @@ var module = function () {
 
 			var dal = new dalModule.module();
 			dal.components.get(args)
+				.then(args => {
+					__responder.success(req, res, args.result);
+				}, err => {
+					__responder.error(req, res, err);
+				});
+		},
+
+		load: (req, res) => {
+			var args = {
+				'req': req,
+				'res': res
+			};
+
+			var dal = new dalModule.module();
+			dal.components.load(args)
 				.then(args => {
 					__responder.success(req, res, args.result);
 				}, err => {
