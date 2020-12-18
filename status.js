@@ -54,6 +54,10 @@ try {
                     res.sendFile(__dirname + '/app/dist/status/index.html');
                 });
 
+                var pages = require('./api/pages');
+                app.use('/status/pages', pages);
+                __logger.info('Loaded: /status/pages');
+
                 var components = require('./api/components');
                 app.use('/status/components', components);
                 __logger.info('Loaded: /status/components');
