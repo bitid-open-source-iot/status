@@ -1,13 +1,20 @@
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
+import { MatListModule } from '@angular/material/list';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatRippleModule } from '@angular/material/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /* --- SERVICES --- */
 import { ApiService } from './services/api/api.service';
 import { AuthService } from './services/auth/auth.service';
+import { PagesService } from './services/pages/pages.service';
 import { ToastService } from './services/toast/toast.service';
 import { HistoryService } from './services/history/history.service';
 import { AccountService } from './services/account/account.service';
@@ -24,7 +31,13 @@ import { environment } from '../environments/environment';
 @NgModule({
     imports: [
         BrowserModule,
+        MatListModule,
+        MatRippleModule,
         AppRoutingModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        FlexLayoutModule,
+        HttpClientModule,
         BrowserAnimationsModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
             'enabled': environment.production
@@ -34,6 +47,7 @@ import { environment } from '../environments/environment';
         ApiService,
         AuthService,
         ToastService,
+        PagesService,
         AccountService,
         HistoryService,
         FormErrorService,

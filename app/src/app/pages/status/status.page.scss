@@ -1,0 +1,61 @@
+.uptime {
+    height: 50px;
+    display: flex;
+    padding: 1px;
+    flex-direction: row;
+    background-color: #FFF;
+    .item {
+        flex: 1 auto;
+        margin: 1px;
+        background-color: #E0E0E0;
+    }
+    .item:hover {
+        background-color: #424242;
+    }
+}
+.components {
+    border: 1px solid #E0E0E0;
+    overflow: hidden;
+    border-radius: 4px;
+    background-color: #fff;
+    .component {
+        padding: 10px;
+        border-bottom: 1px solid #E0E0E0;
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            flex-direction: row;
+            text-transform: uppercase;
+            justify-content: space-between;
+            h1 {
+                height: 12px;
+                font-size: 12px;
+                line-height: 12px;
+                font-weight: 500;
+            }
+            p {
+                height: 10px;
+                font-size: 10px;
+                line-height: 10px;
+            }
+        }
+        .footer {
+            color: #9E9E9E;
+            display: flex;
+            font-size: 10px;
+            margin-top: 5px;
+            align-items: center;
+            text-transform: uppercase;
+            flex-direction: row;
+            .spacer {
+                height: 1px;
+                margin: 10px;
+                background-color: #E0E0E0;
+            }
+        }
+    }
+    .component:last-child {
+        border-bottom: none;
+    }
+}

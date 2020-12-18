@@ -2,16 +2,27 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+/* --- SERVICES --- */
+import { AuthService } from './services/auth/auth.service';
+
 const routes: Routes = [
     {
+        'path': '',
+        'loadChildren': () => import('./pages/status/status.module').then(m => m.StatusModule)
+    },
+    {
         'path': 'components',
-        'canActivate': [],
+        'canActivate': [AuthService],
         'loadChildren': () => import('./pages/components/components.module').then(m => m.ComponentsModule)
     },
     {
         'path': 'subscribers',
-        'canActivate': [],
+        'canActivate': [AuthService],
         'loadChildren': () => import('./pages/subscribers/subscribers.module').then(m => m.SubscribersModule)
+    },
+    {
+        'path': '**',
+        'redirectTo': ''
     }
 ];
 

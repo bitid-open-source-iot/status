@@ -1,1 +1,27 @@
-<router-outlet></router-outlet>
+<mat-drawer-container>
+    <mat-drawer mode="side" opened>
+        <mat-toolbar>
+            <img src="./assets/icons/icon-512x512.png" alt="logo">
+
+            <h1>
+                Status Page
+            </h1>
+        </mat-toolbar>
+
+        <mat-list>
+            <mat-list-item matRipple routerLink="/incidents">
+                Incidents
+            </mat-list-item>
+            <mat-list-item matRipple routerLink="/subscribers">
+                Subscribers
+            </mat-list-item>
+            <mat-list-item matRipple routerLink="/components">
+                Components
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+    <mat-drawer-content>
+        <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>
