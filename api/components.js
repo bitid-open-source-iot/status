@@ -25,6 +25,11 @@ router.post('/list', (req, res) => {
 	myModule.components.list(req, res);
 });
 
+router.post('/write', (req, res) => {
+	var myModule = new bll.module();
+	myModule.components.write(req, res);
+});
+
 router.post('/update', (req, res) => {
 	var myModule = new bll.module();
 	myModule.components.update(req, res);

@@ -277,6 +277,21 @@ var module = function () {
 				});
 		},
 
+		write: (req, res) => {
+			var args = {
+				'req': req,
+				'res': res
+			};
+
+			var dal = new dalModule.module();
+			dal.components.write(args)
+				.then(args => {
+					__responder.success(req, res, args.result);
+				}, err => {
+					__responder.error(req, res, err);
+				});
+		},
+
 		update: (req, res) => {
 			var args = {
 				'req': req,
@@ -308,10 +323,58 @@ var module = function () {
 		}
 	};
 
+	var bllSubscribers = {
+		add: (req, res) => {
+			var args = {
+				'req': req,
+				'res': res
+			};
+
+			var dal = new dalModule.module();
+			dal.subscribers.add(args)
+				.then(args => {
+					__responder.success(req, res, args.result);
+				}, err => {
+					__responder.error(req, res, err);
+				});
+		},
+
+		list: (req, res) => {
+			var args = {
+				'req': req,
+				'res': res
+			};
+
+			var dal = new dalModule.module();
+			dal.subscribers.list(args)
+				.then(args => {
+					__responder.success(req, res, args.result);
+				}, err => {
+					__responder.error(req, res, err);
+				});
+		},
+
+		delete: (req, res) => {
+			var args = {
+				'req': req,
+				'res': res
+			};
+
+			var dal = new dalModule.module();
+			dal.subscribers.delete(args)
+				.then(args => {
+					__responder.success(req, res, args.result);
+				}, err => {
+					__responder.error(req, res, err);
+				});
+		}
+	};
+
 	return {
 		'pages': bllPages,
 		'monitor': bllMonitor,
-		'components': bllComponents
+		'components': bllComponents,
+		'subscribers': bllSubscribers
 	};
 };
 

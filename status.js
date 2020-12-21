@@ -67,6 +67,10 @@ try {
                 app.use('/status/components', components);
                 __logger.info('Loaded: /status/components');
 
+                var subscribers = require('./api/subscribers');
+                app.use('/status/subscribers', subscribers);
+                __logger.info('Loaded: /status/subscribers');
+
                 app.use((error, req, res, next) => {
                     var err = new ErrorResponse();
                     err.error.code = 500;

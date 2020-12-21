@@ -70,3 +70,18 @@ if (historical.count() == 0) {
         'unique': false
     });
 };
+
+var tblSubscribers = db.getCollection('tblSubscribers');
+if (tblSubscribers.count() == 0) {
+    db.tblSubscribers.insert({
+        '_id': ObjectId('000000000000000000000001'),
+        'email': 'xxx@xxx.co.za',
+        'pageId': ObjectId('000000000000000000000001')
+    });
+
+    db.tblSubscribers.ensureIndex({
+        'pageId': 1
+    }, {
+        'unique': false
+    });
+};

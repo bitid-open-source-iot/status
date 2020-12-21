@@ -25,11 +25,6 @@ router.post('/list', (req, res) => {
 	myModule.pages.list(req, res);
 });
 
-router.post('/data', (req, res) => {
-	var myModule = new bll.module();
-	myModule.pages.data(req, res);
-});
-
 router.post('/share', (req, res) => {
 	var myModule = new bll.module();
 	myModule.pages.share(req, res);

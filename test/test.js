@@ -235,6 +235,26 @@ describe('Components', function () {
             });
     });
 
+    it('/status/components/write', function (done) {
+        this.timeout(5000);
+
+        tools.api.components.write()
+            .then((result) => {
+                try {
+                    result.should.have.property('historicalId');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
     it('/status/components/load', function (done) {
         this.timeout(5000);
 
@@ -528,6 +548,22 @@ var tools = {
                         'componentId',
                         'description'
                     ],
+                    'pageId': pageId,
+                    'componentId': componentId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            write: () => {
+                var deferred = Q.defer();
+
+                tools.post('/status/components/write', {
+                    'status': {
+                        'duration': 100,
+                        'responded': true
+                    },
+                    'date': new Date(),
                     'pageId': pageId,
                     'componentId': componentId
                 })

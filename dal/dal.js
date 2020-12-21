@@ -817,6 +817,67 @@ var module = function () {
 			return deferred.promise;
 		},
 
+		write: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
+					}
+				},
+				'_id': ObjectId(args.req.body.pageId)
+			};
+
+			var filter = {
+				'_id': 1
+			};
+
+			db.call({
+				'filter': filter,
+				'params': params,
+				'operation': 'find',
+				'collection': 'tblPages'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'date': new Date(args.req.body.date),
+						'status': {
+							'duration': args.req.body.status.duration || 0,
+							'responded': args.req.body.status.responded || false
+						},
+						'pageId': ObjectId(args.req.body.pageId),
+						'componentId': ObjectId(args.req.body.componentId)
+					};
+		
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblHistorical'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = result[0];
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
 		update: (args) => {
 			var deferred = Q.defer();
 
@@ -941,10 +1002,208 @@ var module = function () {
 		}
 	};
 
+	var dalSubscribers = {
+		add: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 4
+						},
+						'email': args.req.body.header.email
+					}
+				},
+				'_id': ObjectId(args.req.body.pageId)
+			};
+
+			var filter = {
+				'_id': 1
+			};
+
+			db.call({
+				'filter': filter,
+				'params': params,
+				'operation': 'find',
+				'collection': 'tblSubscribers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'pageId': ObjectId(args.req.body.pageId),
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblComponents'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = result[0];
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		list: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 1
+						},
+						'email': args.req.body.header.email
+					}
+				},
+				'_id': ObjectId(args.req.body.pageId)
+			};
+
+			var filter = {
+				'_id': 1
+			};
+
+			db.call({
+				'filter': filter,
+				'params': params,
+				'operation': 'find',
+				'collection': 'tblSubscribers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'pageId': ObjectId(args.req.body.pageId)
+					};
+
+					if (typeof (args.req.body.componentId) != 'undefined' && args.req.body.componentId !== null) {
+						if (Array.isArray(args.req.body.componentId) && args.req.body.componentId.length > 0) {
+							params._id = {
+								$in: args.req.body.componentId.map(id => ObjectId(id))
+							};
+						} else {
+							params._id = ObjectId(args.req.body.componentId);
+						};
+					};
+
+					var filter = {};
+					if (Array.isArray(args.req.body.filter) && args.req.body.filter.length > 0) {
+						filter._id = 0;
+						args.req.body.filter.map(f => {
+							if (f == 'componentId') {
+								filter['_id'] = 1;
+							} else if (f == 'role' || f == 'users') {
+								filter['bitid.auth.users'] = 1;
+							} else if (f == 'organizationOnly') {
+								filter['bitid.auth.organizationOnly'] = 1;
+							} else {
+								filter[f] = 1;
+							};
+						});
+					};
+
+					deferred.resolve({
+						'params': params,
+						'filter': filter,
+						'operation': 'find',
+						'collection': 'tblComponents'
+					})
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = result;
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		delete: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 4
+						},
+						'email': args.req.body.header.email
+					}
+				},
+				'_id': ObjectId(args.req.body.pageId)
+			};
+
+			var filter = {
+				'_id': 1
+			};
+
+			db.call({
+				'filter': filter,
+				'params': params,
+				'operation': 'find',
+				'collection': 'tblSubscribers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.componentId),
+						'pageId': ObjectId(args.req.body.pageId)
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'remove',
+						'collection': 'tblComponents'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = result;
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		}
+	};
+
 	return {
 		'pages': dalPages,
 		'monitor': dalMonitor,
-		'components': dalComponents
+		'components': dalComponents,
+		'subscribers': dalSubscribers
 	};
 };
 
