@@ -1,5 +1,6 @@
 const Q = require('q');
 const db = require('../db/mongo');
+const format = require('../lib/format');
 const ObjectId = require('mongodb').ObjectId;
 const ErrorResponse = require('../lib/error-response');
 
@@ -44,7 +45,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.pageId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -126,7 +127,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.pageId) != 'undefined' && args.req.body.pageId !== null) {
@@ -184,11 +185,11 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+					$ne: format.email(args.req.body.email)
 				},
 				'_id': ObjectId(args.req.body.pageId)
 			};
@@ -200,7 +201,7 @@ var module = function () {
 				$push: {
 					'bitid.auth.users': {
 						'role': args.req.body.role,
-						'email': args.req.body.email
+						'email': format.email(args.req.body.email)
 					}
 				}
 			};
@@ -250,7 +251,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -283,7 +284,7 @@ var module = function () {
 				'bitid.auth.users': {
 					$elemMatch: {
 						'role': 5,
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -313,7 +314,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.pageId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			db.call({
@@ -327,9 +328,9 @@ var module = function () {
 
 					var role = 0;
 					var unsubscribe = true;
-					if (args.req.body.email == args.req.body.header.email) {
+					if (format.email(args.req.body.email) == format.email(args.req.body.header.email)) {
 						result[0].bitid.auth.users.map(user => {
-							if (user.email == args.req.body.header.email) {
+							if (user.email == format.email(args.req.body.header.email)) {
 								if (user.role == 5) {
 									role = 5;
 									unsubscribe = false;
@@ -338,7 +339,7 @@ var module = function () {
 						});
 					} else {
 						result[0].bitid.auth.users.map(user => {
-							if (user.email == args.req.body.header.email) {
+							if (user.email == format.email(args.req.body.header.email)) {
 								if (user.role < 4) {
 									role = user.role;
 									unsubscribe = false;
@@ -357,7 +358,7 @@ var module = function () {
 							},
 							$pull: {
 								'bitid.auth.users': {
-									'email': args.req.body.email
+									'email': format.email(args.req.body.email)
 								}
 							}
 						};
@@ -407,7 +408,7 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -423,7 +424,7 @@ var module = function () {
 
 					var params = {
 						'_id': ObjectId(args.req.body.pageId),
-						'bitid.auth.users.email': args.req.body.email
+						'bitid.auth.users.email': format.email(args.req.body.email)
 					};
 
 					var update = {
@@ -533,7 +534,7 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -590,7 +591,7 @@ var module = function () {
 						'role': {
 							$gte: 1
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -701,7 +702,7 @@ var module = function () {
 					}
 				},
 				{
-					$unwind: "$component"
+					$unwind: '$component'
 				},
 				{
 					$project: {
@@ -744,7 +745,7 @@ var module = function () {
 						'role': {
 							$gte: 1
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -826,7 +827,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -887,7 +888,7 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -954,7 +955,7 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -1012,7 +1013,7 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -1069,7 +1070,7 @@ var module = function () {
 						'role': {
 							$gte: 1
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
@@ -1151,7 +1152,7 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.pageId)
